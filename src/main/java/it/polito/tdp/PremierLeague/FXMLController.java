@@ -8,6 +8,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+
+import it.polito.tdp.PremierLeague.model.Match;
+import it.polito.tdp.PremierLeague.model.Match;
 import it.polito.tdp.PremierLeague.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,6 +25,7 @@ import javafx.scene.control.TextField;
 public class FXMLController {
 
 	Model model;
+	Graph<Match, DefaultWeightedEdge> graph;
 	
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -39,7 +46,7 @@ public class FXMLController {
     private TextField txtMinuti; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbMese"
-    private ComboBox<?> cmbMese; // Value injected by FXMLLoader
+    private ComboBox<String> cmbMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbM1"
     private ComboBox<?> cmbM1; // Value injected by FXMLLoader
@@ -52,16 +59,71 @@ public class FXMLController {
 
     @FXML
     void doConnessioneMassima(ActionEvent event) {
+    	List <DefaultWeightedEdge> result = this.model.listaArchi();
     	
+    	for(DefaultWeightedEdge e : result) {
+    		txtResult.appendText("\n connessione massima: " + this.graph.getEdgeWeight(e) +" match 1: "+ this.graph.getEdgeSource(e).getMatchID() +" match 2: "+ this.graph.getEdgeTarget(e).getMatchID()+"\n");
+    	}
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	
+    	String minutitxt = this.txtMinuti.getText();
+    	
+    	int minuti = Integer.parseInt(minutitxt);
+    	
+    	String meseTxt = cmbMese.getValue();
+    	
+    	int mese = 0;
+    	
+    	if( meseTxt.compareTo("Gennaio")==0) {
+    		mese = 1;
+    	}
+    	else if(meseTxt.compareTo("Febbraio")==0) {
+    		mese = 2;
+    	}
+    	else if(meseTxt.compareTo("Marzo")==0) {
+    		mese = 3;
+    	}
+    	else if(meseTxt.compareTo("Aprile")==0) {
+    		mese = 4;
+    	}
+    	else if(meseTxt.compareTo("Maggio")==0) {
+    		mese = 5;
+    	}
+    	else if(meseTxt.compareTo("Giugno")==0) {
+    		mese = 6;
+    	}
+    	else if(meseTxt.compareTo("Luglio")==0) {
+    		mese = 7;
+    	}
+    	else if(meseTxt.compareTo("Agosto")==0) {
+    		mese = 8;
+    	}
+    	else if(meseTxt.compareTo("Settembre")==0) {
+    		mese = 9;
+    	}
+    	else if(meseTxt.compareTo("Ottobre")==0) {
+    		mese = 10;
+    	}
+    	else if(meseTxt.compareTo("Novembre")==0) {
+    		mese = 11;
+    	}
+    	else if(meseTxt.compareTo("Dicembre")==0) {
+    		mese = 12;
+    	}
+    	
+    	this.graph = this.model.creaGrafo(mese, minuti);
+    	
+    	txtResult.appendText("il numero di vertici è: "+this.graph.vertexSet().size()+ "\n"+"il numero di archi è: "+this.graph.edgeSet().size());
+    	
+    	
     }
 
     @FXML
     void doCollegamento(ActionEvent event) {
+    	
     	
     }
 
@@ -79,6 +141,20 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	
+    	this.cmbMese.getItems().add("Gennaio");
+    	this.cmbMese.getItems().add("Febbraio");
+    	this.cmbMese.getItems().add("Marzo");
+    	this.cmbMese.getItems().add("Aprile");
+    	this.cmbMese.getItems().add("Maggio");
+    	this.cmbMese.getItems().add("Giugno");
+    	this.cmbMese.getItems().add("Luglio");
+    	this.cmbMese.getItems().add("Agosto");
+    	this.cmbMese.getItems().add("Settembre");
+    	this.cmbMese.getItems().add("Ottobre");
+    	this.cmbMese.getItems().add("Novembre");
+    	this.cmbMese.getItems().add("Dicembre");
+    	
   
     }
     

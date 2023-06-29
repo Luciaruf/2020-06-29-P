@@ -74,7 +74,7 @@ public class PremierLeagueDAO {
 
 				
 				Match match = new Match(res.getInt("m.MatchID"), res.getInt("m.TeamHomeID"), res.getInt("m.TeamAwayID"), res.getInt("m.teamHomeFormation"), 
-							res.getInt("m.teamAwayFormation"),res.getInt("m.resultOfTeamHome"), res.getTimestamp("m.date").toLocalDateTime(), res.getString("t1.Name"),res.getString("t2.Name"));
+							res.getInt("m.teamAwayFormation"),res.getInt("m.resultOfTeamHome"), res.getTimestamp("m.date").toLocalDateTime());
 				
 				
 				result.add(match);
@@ -87,6 +87,67 @@ public class PremierLeagueDAO {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public List<Match> listAllMatchesPerMonth(int mese){
+		String sql = "SELECT * "
+				+ "FROM Matches m "
+				+ "WHERE MONTH(Date) = ?";
+		List<Match> result = new ArrayList<Match>();
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, mese);
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+
+				
+				Match match = new Match(res.getInt("m.MatchID"), res.getInt("m.TeamHomeID"), res.getInt("m.TeamAwayID"), res.getInt("m.teamHomeFormation"), 
+							res.getInt("m.teamAwayFormation"),res.getInt("m.resultOfTeamHome"), res.getTimestamp("m.date").toLocalDateTime());
+				
+				
+				result.add(match);
+
+			}
+			conn.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<Integer> getListaPlayerByMatch(Match match, int min){
+		String sql = "SELECT distinct(a.`PlayerID`) as id "
+				+ "FROM Matches m, Actions a "
+				+ "WHERE m.`MatchID` = a.`MatchID` "
+				+ "AND m.`MatchID` = ? "
+				+ "AND a.`TimePlayed`>=? ";
+		
+		List<Integer> result = new ArrayList<>();
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, match.getMatchID());
+			st.setInt(2, min);
+			ResultSet res = st.executeQuery();
+			
+			while (res.next()) {
+				
+				result.add(res.getInt("id"));
+
+			}
+			conn.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 	
 }
